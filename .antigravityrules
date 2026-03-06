@@ -1,0 +1,24 @@
+# Global Project Rules & Standards
+
+## Dependency Management
+
+- **Zod:** Always use the latest version (`zod@latest`). If Zod is missing or below v3.23+, upgrade immediately.
+- **Package Manager:** Default to `npm` (unless `pnpm-lock.yaml` or `yarn.lock` is present).
+
+## Schema Validation & Types
+
+- All form inputs and API responses must have a corresponding Zod schema.
+- Use `z.infer<typeof schema>` to generate TypeScript types from Zod schemas to maintain a single source of truth.
+- When using **ShadCN** forms, strictly follow the `react-hook-form` + `@hookform/resolvers/zod` pattern.
+
+## Frontend Architecture
+
+- **React/Vite:** Use functional components with hooks and strict TypeScript typing.
+- **TanStack Table:** When defining columns, use Zod schemas to validate cell data types where applicable.
+- **Styling:** Use **Tailwind CSS** utility classes. Avoid inline styles or CSS modules unless requested.
+- **Components:** Favor **ShadCN** (Radix UI) components. If a new component is needed, check if it can be built using ShadCN primitives first.
+
+## Code Quality
+
+- Ensure all code passes **ESLint** and **Prettier** configurations.
+- Prefer explicit imports (e.g., `import { z } from "zod"`) over namespace imports where possible.
