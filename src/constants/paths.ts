@@ -7,4 +7,5 @@ export const ROUTES = {
   MEMBER_CREATE: "/member/new",
   MEMBER_DETAILS: "/member/:id",
   ONBOARDING: "/onboarding",
+  QR: "/qr",
 };

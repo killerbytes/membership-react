@@ -1,22 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Member } from "@/schemas";
-import { memberServices } from "@/services";
-import React from "react";
+import { useCurrentUser } from "@/features/auth/hooks/userCurrentUser";
+import { memberApi } from "@/features/members/api";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Members() {
-  const [member, setMember] = React.useState<Member>({
-    id: 0,
-    firstName: "",
-    lastName: "",
-    email: "",
+  const { data: user, isLoading: isUserLoading } = useCurrentUser();
+
+  const { data: member, isLoading: isMemberLoading } = useQuery({
+    queryKey: ["member", user?.id],
+    queryFn: () => memberApi.getMember(user?.id as number),
+    enabled: !!user?.id,
   });
-  const getData = async () => {
-    const response = await memberServices.get(1);
-    setMember(response);
-  };
-  React.useEffect(() => {
-    getData();
-  }, []);
+
+  if (isUserLoading || isMemberLoading) {
+    return <div>Loading member data...</div>;
+  }
+
   return (
     <div className="flex gap-4 flex-col">
       <Card>
@@ -54,7 +53,7 @@ export default function Members() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Registered Address</CardTitle>
+          <CardTitle>Permanent Address</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="gap-4 flex flex-col">
@@ -62,25 +61,25 @@ export default function Members() {
               <label htmlFor="" className="text-sm text-muted-foreground">
                 Address Line 1
               </label>
-              <span>{member?.registeredAddress1}</span>
+              <span>{member?.permanentAddress1}</span>
             </div>
             <div className="flex flex-col">
               <label htmlFor="" className="text-sm text-muted-foreground">
                 Address Line 2
               </label>
-              <span>{member?.registeredAddress2}</span>
+              <span>{member?.permanentAddress2}</span>
             </div>
             <div className="flex flex-col">
               <label htmlFor="" className="text-sm text-muted-foreground">
                 Barangay
               </label>
-              <span>{member?.registeredBarangay}</span>
+              <span>{member?.permanentBarangayName}</span>
             </div>
             <div className="flex flex-col">
               <label htmlFor="" className="text-sm text-muted-foreground">
                 City
               </label>
-              <span>{member?.registeredCity}</span>
+              <span>{member?.permanentCityName}</span>
             </div>
           </div>
         </CardContent>
@@ -107,13 +106,13 @@ export default function Members() {
               <label htmlFor="" className="text-sm text-muted-foreground">
                 Barangay
               </label>
-              <span>{member?.currentBarangay}</span>
+              <span>{member?.currentBarangayName}</span>
             </div>
             <div className="flex flex-col">
               <label htmlFor="" className="text-sm text-muted-foreground">
                 City
               </label>
-              <span>{member?.currentCity}</span>
+              <span>{member?.currentCityName}</span>
             </div>
           </div>
         </CardContent>

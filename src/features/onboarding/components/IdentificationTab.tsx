@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { TabsContent } from "@/components/ui/tabs";
 import { Controller, type UseFormReturn } from "react-hook-form";
 
-export default function IdentificatioTab({
+export default function IdentificationTab({
   form,
   onSubmit,
 }: {

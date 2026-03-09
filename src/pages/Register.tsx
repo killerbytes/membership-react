@@ -14,34 +14,44 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ROUTES } from "@/constants";
+import { userApi } from "@/features/members/api/user";
 import {
   userCreateSchema,
   type UserBase,
   type UserCreate,
-} from "@/schemas/user.schema";
-import { userServices } from "@/services";
+} from "@/features/members/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast, Toaster } from "sonner";
 import z from "zod";
 
-export default function Register() {
+function useRegisterForm() {
   const navigate = useNavigate();
 
   const form = useForm<UserCreate>({
     resolver: zodResolver(userCreateSchema),
     defaultValues: {
-      // identifier: "",
-      // password: "",
-      // confirmPassword: "",
-
-      identifier: "testing@test.com",
-      password: "12345678",
-      confirmPassword: "12345678",
+      identifier: "test1@test.com",
+      password: "password",
+      confirmPassword: "password",
     },
   });
-  const onSubmit = async (formValues: UserCreate) => {
+
+  const mutation = useMutation({
+    mutationFn: (payload: UserBase) => userApi.create(payload),
+    onSuccess: () => {
+      navigate(ROUTES.LOGIN);
+    },
+    onError: (error) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      toast.error(`Register failed, ${errorMessage}`);
+    },
+  });
+
+  const onSubmit = form.handleSubmit((formValues) => {
     const { identifier, ...rest } = formValues;
     const emailSchema = z.email();
     const isEmail = emailSchema.safeParse(identifier);
@@ -57,14 +67,14 @@ export default function Register() {
         mobile: identifier,
       };
     }
+    mutation.mutate(payload);
+  });
 
-    try {
-      await userServices.create(payload);
-      navigate(ROUTES.LOGIN);
-    } catch (error) {
-      toast.error(`Register failed, ${error.message}`);
-    }
-  };
+  return { form, onSubmit, isPending: mutation.isPending };
+}
+
+export default function Register() {
+  const { form, onSubmit, isPending } = useRegisterForm();
   return (
     <div className="flex justify-center items-center h-screen p-4">
       <div className="w-full max-w-sm">
@@ -78,7 +88,7 @@ export default function Register() {
           <CardContent>
             <form
               id="form-register"
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={onSubmit}
               className="flex flex-col gap-7"
             >
               <Controller
@@ -141,8 +151,8 @@ export default function Register() {
                 )}
               />
               <Field>
-                <Button type="submit" form="form-register">
-                  Submit
+                <Button type="submit" form="form-register" disabled={isPending}>
+                  {isPending ? "Registering..." : "Submit"}
                 </Button>
               </Field>
               <FieldDescription className="text-center">

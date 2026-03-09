@@ -1,4 +1,5 @@
 import z from "zod";
+import { memberSchema } from "./member.schema";
 
 export const userBaseSchema = z.object({
   email: z
@@ -18,7 +19,10 @@ export const userBaseSchema = z.object({
   }),
 });
 
-export const userSchema = userBaseSchema.extend({});
+export const userSchema = userBaseSchema.extend({
+  id: z.number(),
+  member: memberSchema,
+});
 
 const mobileRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
 export const userCreateSchema = z

@@ -1,5 +1,5 @@
 import { ROUTES } from "@/constants";
-import { Heart, Home, Mail, User } from "lucide-react";
+import { Heart, Home, Mail, QrCode, User } from "lucide-react";
 import { NavLink } from "react-router";
 
 export default function Navbar() {
@@ -13,6 +13,9 @@ export default function Navbar() {
       </NavLink>
       <NavLink to={ROUTES.LOGIN}>
         <Mail />
+      </NavLink>
+      <NavLink to={ROUTES.QR}>
+        <QrCode />
       </NavLink>
       <NavLink to={ROUTES.MEMBER}>
         <User />
