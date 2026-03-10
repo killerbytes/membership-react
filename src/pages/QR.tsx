@@ -1,18 +1,24 @@
-import { useCurrentUser } from "@/features/auth/hooks/userCurrentUser";
+import { useMember } from "@/features/members/hooks/useMember";
+import { QRCodeSVG } from "qrcode.react";
 
 const MyQRCode = () => {
-  const { data: user } = useCurrentUser();
-  console.log(user);
+  const { data: member, isWaiting } = useMember();
+
+  if (isWaiting) {
+    return <div>Loading member data...</div>;
+  }
 
   return (
-    <div style={{ padding: "20px", background: "white" }}>
-      {/* <QRCodeSVG
-        value={user?.id}
-        size={256}
-        bgColor={"#ffffff"}
-        fgColor={"#000000"}
-        level={"L"} // Error correction level ('L', 'M', 'Q', 'H')
-      /> */}
+    <div className="flex flex-1 justify-center items-center">
+      {member?.membershipId && (
+        <QRCodeSVG
+          value={member.membershipId}
+          // size={256}
+          bgColor={"#ffffff"}
+          fgColor={"#000000"}
+          level={"H"} // Error correction level ('L', 'M', 'Q', 'H')
+        />
+      )}
     </div>
   );
 };

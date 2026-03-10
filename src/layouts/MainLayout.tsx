@@ -8,9 +8,9 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-svh flex flex-col">
       <Header />
-      <main className="flex-1 px-4 pb-4 pt-4">{children}</main>
+      <main className="flex-1 px-4 pb-4 pt-4 flex flex-col">{children}</main>
       <Navbar />
       <Toaster position="bottom-left" richColors />
     </div>

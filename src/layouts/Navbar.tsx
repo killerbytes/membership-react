@@ -5,7 +5,7 @@ import { NavLink } from "react-router";
 export default function Navbar() {
   return (
     <nav className="flex justify-around p-4 sticky bottom-0 bg-secondary shadow-[0_-2px_8px_rgba(0,0,0,0.1)] ">
-      <NavLink to={ROUTES.MAIN}>
+      <NavLink to={ROUTES.MEMBER}>
         <Home />
       </NavLink>
       <NavLink to={ROUTES.REGISTER}>

@@ -1,6 +1,6 @@
 import { Tabs } from "@/components/ui/tabs";
 import { ROUTES } from "@/constants";
-import { useCurrentUser } from "@/features/auth/hooks/userCurrentUser";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { memberApi } from "@/features/members/api";
 import { memberInputSchema, type MemberInput } from "@/features/members/types";
 import AddressTab from "@/features/onboarding/components/AddressTab";
@@ -9,6 +9,7 @@ import IdentificationTab from "@/features/onboarding/components/IdentificationTa
 import InfoTab from "@/features/onboarding/components/InfoTab";
 import ProfileTab from "@/features/onboarding/components/ProfileTab";
 import ReviewTab from "@/features/onboarding/components/ReviewTab";
+import { queryClient } from "@/lib/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IdCard, MapPinHouse, User } from "lucide-react";
 import React from "react";
@@ -22,21 +23,21 @@ const tabs = [
   { key: "identification", label: "Photo", icon: IdCard },
 ];
 export default function Onboarding() {
-  const [activeTab, setActiveTab] = React.useState("profile");
+  const [activeTab, setActiveTab] = React.useState("identification");
   const { data: user } = useCurrentUser();
   const navigate = useNavigate();
 
   const form = useForm<MemberInput>({
     resolver: zodResolver(memberInputSchema),
     defaultValues: {
-      currentAddress: false,
+      currentAddress: true,
       currentAddress1: "",
       currentAddress2: "",
       currentBarangay: "",
       currentCity: "",
-      firstName: "",
-      lastName: "",
-      middleName: "",
+      firstName: "Joel",
+      lastName: "Carlos",
+      middleName: "Ramos",
       permanentAddress1: "",
       permanentAddress2: "",
       permanentBarangay: "",
@@ -45,8 +46,6 @@ export default function Onboarding() {
       tinNo: "",
       // email: "",
       // mobile: "",
-      photoUrl: "xxx",
-      validIdUrl: "xxx",
     },
   });
 
@@ -61,7 +60,9 @@ export default function Onboarding() {
   const onSubmit = async (formValues: any) => {
     try {
       console.log(formValues);
-      await memberApi.createMember(formValues);
+      await memberApi.create(formValues);
+      await queryClient.invalidateQueries({ queryKey: ["current-user"] });
+
       toast.success("Member created successfully");
       navigate(ROUTES.MEMBER);
     } catch (err: unknown) {
@@ -115,14 +116,14 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 flex-1">
       <h1>Member Onboarding</h1>
       <BreadcrumbTabs
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         tabs={tabs}
       />
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
         <ProfileTab
           form={form}
           onSubmit={() => handleNext("profile", "info")}
@@ -140,7 +141,6 @@ export default function Onboarding() {
           form={form}
           onSubmit={() => {
             console.log(form.getValues(), form.formState.errors);
-
             form.handleSubmit(onSubmit)();
           }}
         />

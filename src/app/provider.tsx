@@ -1,7 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { queryClient } from "@/lib/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import * as React from "react";
 import { BrowserRouter } from "react-router-dom";
 
@@ -22,7 +21,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
           <BrowserRouter>{children}</BrowserRouter>
         </ThemeProvider>
-        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+        {/* {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />} */}
       </QueryClientProvider>
     </React.Suspense>
   );

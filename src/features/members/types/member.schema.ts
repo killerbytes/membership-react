@@ -78,6 +78,7 @@ export const memberInputSchema = memberInputBaseSchema.superRefine(
 export const memberSchema = memberInputBaseSchema
   .extend({
     id: z.number(),
+    membershipId: z.string(),
     permanentCityName: z.string(),
     permanentBarangayName: z.string(),
     currentCityName: z.string(),

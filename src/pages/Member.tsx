@@ -1,18 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCurrentUser } from "@/features/auth/hooks/userCurrentUser";
-import { memberApi } from "@/features/members/api";
-import { useQuery } from "@tanstack/react-query";
+import { useMember } from "@/features/members/hooks/useMember";
 
 export default function Members() {
-  const { data: user, isLoading: isUserLoading } = useCurrentUser();
+  const { data: member, isWaiting: isMemberLoading } = useMember();
 
-  const { data: member, isLoading: isMemberLoading } = useQuery({
-    queryKey: ["member", user?.id],
-    queryFn: () => memberApi.getMember(user?.id as number),
-    enabled: !!user?.id,
-  });
-
-  if (isUserLoading || isMemberLoading) {
+  if (isMemberLoading) {
     return <div>Loading member data...</div>;
   }
 
@@ -24,6 +16,12 @@ export default function Members() {
         </CardHeader>
         <CardContent>
           <div className="gap-4 flex flex-col">
+            <div className="flex flex-col">
+              <label htmlFor="" className="text-sm text-muted-foreground">
+                Member ID
+              </label>
+              <span>{member?.membershipId}</span>
+            </div>
             <div className="flex flex-col">
               <label htmlFor="" className="text-sm text-muted-foreground">
                 Email
@@ -48,6 +46,18 @@ export default function Members() {
               </label>
               <span>{member?.middleName}</span>
             </div>
+            <div className="flex flex-col">
+              <label htmlFor="" className="text-sm text-muted-foreground">
+                TIN No
+              </label>
+              <span>{member?.tinNo ? member?.tinNo : "-"}</span>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="" className="text-sm text-muted-foreground">
+                RSBSA No
+              </label>
+              <span>{member?.rsbsaNo ? member?.rsbsaNo : "-"}</span>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -63,12 +73,14 @@ export default function Members() {
               </label>
               <span>{member?.permanentAddress1}</span>
             </div>
-            <div className="flex flex-col">
-              <label htmlFor="" className="text-sm text-muted-foreground">
-                Address Line 2
-              </label>
-              <span>{member?.permanentAddress2}</span>
-            </div>
+            {member?.permanentAddress2 && (
+              <div className="flex flex-col">
+                <label htmlFor="" className="text-sm text-muted-foreground">
+                  Address Line 2
+                </label>
+                <span>{member?.permanentAddress2}</span>
+              </div>
+            )}
             <div className="flex flex-col">
               <label htmlFor="" className="text-sm text-muted-foreground">
                 Barangay
@@ -96,12 +108,14 @@ export default function Members() {
               </label>
               <span>{member?.currentAddress1}</span>
             </div>
-            <div className="flex flex-col">
-              <label htmlFor="" className="text-sm text-muted-foreground">
-                Address Line 2
-              </label>
-              <span>{member?.currentAddress2}</span>
-            </div>
+            {member?.currentAddress2 && (
+              <div className="flex flex-col">
+                <label htmlFor="" className="text-sm text-muted-foreground">
+                  Address Line 2
+                </label>
+                <span>{member?.currentAddress2}</span>
+              </div>
+            )}
             <div className="flex flex-col">
               <label htmlFor="" className="text-sm text-muted-foreground">
                 Barangay

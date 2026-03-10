@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
 import { authApi } from "@/features/auth/api";
-import { useCurrentUser } from "@/features/auth/hooks/userCurrentUser";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { useStore } from "@/stores";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { useEffect } from "react";
@@ -9,11 +10,13 @@ import { useNavigate } from "react-router";
 
 export default function Header() {
   const navigate = useNavigate();
+  const { authState } = useStore();
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useCurrentUser();
 
   useEffect(() => {
     if (!isLoading && user) {
+      authState.setUser(user);
       if (!user.member) {
         navigate(ROUTES.ONBOARDING);
       }
