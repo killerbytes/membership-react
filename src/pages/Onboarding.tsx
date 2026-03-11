@@ -35,8 +35,8 @@ export default function Onboarding() {
       currentAddress2: "",
       currentBarangay: "",
       currentCity: "",
-      firstName: "Joel",
-      lastName: "Carlos",
+      firstName: "",
+      lastName: "",
       middleName: "Ramos",
       permanentAddress1: "",
       permanentAddress2: "",
@@ -65,21 +65,36 @@ export default function Onboarding() {
 
       toast.success("Member created successfully");
       navigate(ROUTES.MEMBER);
-    } catch (err: unknown) {
+    } catch (err: any) {
       if (err.type === "VALIDATION_ERROR") {
         const error = err as {
           error?: string;
           errors?: { field: any; message: string }[];
         };
         console.log(error);
+        let firstErrorTab: string | null = null;
+
         error.errors?.forEach((e) => {
           if (e.field) {
             form.setError(e.field, {
               type: "server",
               message: e.message,
             });
+
+            if (!firstErrorTab) {
+              for (const [tab, fields] of Object.entries(tabFields)) {
+                if ((fields as readonly string[]).includes(e.field)) {
+                  firstErrorTab = tab;
+                  break;
+                }
+              }
+            }
           }
         });
+
+        if (firstErrorTab) {
+          setActiveTab(firstErrorTab);
+        }
       } else {
         toast.error(err.message);
       }
@@ -102,8 +117,17 @@ export default function Onboarding() {
       "currentCity",
       "currentBarangay",
     ],
-    identification: ["email"],
+    identification: ["photoUrl", "validIdUrl"],
   } as const;
+
+  const onInvalid = (errors: any) => {
+    for (const [tab, fields] of Object.entries(tabFields)) {
+      if (fields.some((field) => errors[field])) {
+        setActiveTab(tab);
+        break;
+      }
+    }
+  };
 
   const handleNext = async (
     currentTabKey: keyof typeof tabFields,
@@ -141,7 +165,7 @@ export default function Onboarding() {
           form={form}
           onSubmit={() => {
             console.log(form.getValues(), form.formState.errors);
-            form.handleSubmit(onSubmit)();
+            form.handleSubmit(onSubmit, onInvalid)();
           }}
         />
       </Tabs>

@@ -11,12 +11,9 @@ export type UserState = {
   };
 };
 
-export const createUserSlice: StateCreator<
-  StoreState,
-  [["zustand/immer", never]],
-  [],
-  UserState
-> = (set) => ({
+export const createUserSlice: StateCreator<StoreState, [], [], UserState> = (
+  set
+) => ({
   userState: {
     users: [],
     hasLoaded: false,
