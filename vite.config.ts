@@ -4,15 +4,16 @@ import fs from "fs";
 import path from "path";
 import { defineConfig } from "vite";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     host: true,
-    https: {
-      key: fs.readFileSync("./localhost+2-key.pem"),
-      cert: fs.readFileSync("./localhost+2.pem"),
-    },
+    ...(fs.existsSync(".env.local") && {
+      https: {
+        key: fs.readFileSync("./localhost+2-key.pem"),
+        cert: fs.readFileSync("./localhost+2.pem"),
+      },
+    }),
   },
   resolve: {
     alias: {
