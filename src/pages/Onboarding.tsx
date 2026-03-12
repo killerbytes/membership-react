@@ -8,7 +8,6 @@ import { BreadcrumbTabs } from "@/features/onboarding/components/BreadcrumbTabs"
 import IdentificationTab from "@/features/onboarding/components/IdentificationTab";
 import InfoTab from "@/features/onboarding/components/InfoTab";
 import ProfileTab from "@/features/onboarding/components/ProfileTab";
-import ReviewTab from "@/features/onboarding/components/ReviewTab";
 import { queryClient } from "@/lib/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IdCard, MapPinHouse, User } from "lucide-react";
@@ -61,7 +60,7 @@ const STEP_DESCRIPTIONS: Record<string, { title: string; subtitle: string }> = {
 };
 
 export default function Onboarding() {
-  const [activeTab, setActiveTab] = React.useState("identification");
+  const [activeTab, setActiveTab] = React.useState("profile");
   const { data: user } = useCurrentUser();
   const navigate = useNavigate();
   if (user?.member) {
@@ -186,12 +185,6 @@ export default function Onboarding() {
           onSubmit={() => handleNext("address", "identification")}
         />
         <IdentificationTab
-          form={form}
-          onSubmit={() => {
-            form.handleSubmit(onSubmit, onInvalid)();
-          }}
-        />
-        <ReviewTab
           form={form}
           onSubmit={() => {
             form.handleSubmit(onSubmit, onInvalid)();
