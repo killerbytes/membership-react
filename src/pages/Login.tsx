@@ -16,7 +16,7 @@ import { Eye, EyeOff, Loader2, LogIn, Sprout } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import z from "zod";
 
 const loginSchema = z.object({
@@ -38,8 +38,8 @@ function useLoginForm() {
     mutationFn: (values: LoginFormData) => authApi.login(values),
     onSuccess: () => navigate(ROUTES.MAIN),
     onError: (error) => {
-      const msg = error instanceof Error ? error.message : "Unknown error";
-      toast.error(`Login failed — ${msg}`);
+      // const msg = error instanceof Error ? error.message : "Unknown error";
+      toast.error(`Login failed — ${error.message}`);
     },
   });
 
@@ -95,6 +95,13 @@ export default function Login() {
                         id={field.name}
                         autoComplete="username"
                         placeholder="e.g. juan@email.com"
+                        onBlur={(e) => {
+                          field.onBlur();
+                          const value = e.target.value.trim();
+                          if (value) {
+                            form.setValue("identifier", value);
+                          }
+                        }}
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -169,7 +176,6 @@ export default function Login() {
           </Card>
         </div>
       </div>
-      <Toaster position="bottom-left" richColors />
     </>
   );
 }

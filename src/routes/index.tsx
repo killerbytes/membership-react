@@ -1,6 +1,7 @@
 import { ROUTES } from "@/constants";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainLayout from "@/layouts/MainLayout";
+import ToasterLayout from "@/layouts/ToasterLayout";
 import Finance from "@/pages/Finance";
 import Login from "@/pages/Login";
 import Main from "@/pages/Main";
@@ -15,9 +16,20 @@ export const AppRoutes = () => {
   const customRoutes = [
     {
       path: ROUTES.LOGIN,
-      element: <Login />,
+      element: (
+        <ToasterLayout>
+          <Login />
+        </ToasterLayout>
+      ),
     },
-    { path: ROUTES.REGISTER, element: <Register /> },
+    {
+      path: ROUTES.REGISTER,
+      element: (
+        <ToasterLayout>
+          <Register />
+        </ToasterLayout>
+      ),
+    },
     {
       path: "/",
       element: (

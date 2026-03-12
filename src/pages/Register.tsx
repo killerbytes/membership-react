@@ -21,7 +21,7 @@ import { Eye, EyeOff, Loader2, Sprout, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import z from "zod";
 
 function useRegisterForm() {
@@ -101,6 +101,13 @@ export default function Register() {
                         id={field.name}
                         autoComplete="username"
                         placeholder="e.g. juan@email.com"
+                        onBlur={(e) => {
+                          field.onBlur();
+                          const value = e.target.value.trim();
+                          if (value) {
+                            form.setValue("identifier", value);
+                          }
+                        }}
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -129,7 +136,9 @@ export default function Register() {
                           tabIndex={-1}
                           onClick={() => setShowPassword((p) => !p)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={showPassword ? "Hide password" : "Show password"}
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -167,7 +176,9 @@ export default function Register() {
                           tabIndex={-1}
                           onClick={() => setShowConfirm((p) => !p)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label={showConfirm ? "Hide password" : "Show password"}
+                          aria-label={
+                            showConfirm ? "Hide password" : "Show password"
+                          }
                         >
                           {showConfirm ? (
                             <EyeOff className="h-4 w-4" />
@@ -211,7 +222,6 @@ export default function Register() {
           </Card>
         </div>
       </div>
-      <Toaster position="bottom-left" richColors />
     </>
   );
 }

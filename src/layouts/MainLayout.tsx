@@ -12,7 +12,7 @@ export default function MainLayout({
       <Header />
       <main className="flex-1 px-4 pb-4 pt-4 flex flex-col">{children}</main>
       <Navbar />
-      <Toaster position="bottom-left" richColors />
+      <Toaster position="top-right" richColors />
     </div>
   );
 }
