@@ -61,10 +61,12 @@ const STEP_DESCRIPTIONS: Record<string, { title: string; subtitle: string }> = {
 };
 
 export default function Onboarding() {
-  const [activeTab, setActiveTab] = React.useState("profile");
+  const [activeTab, setActiveTab] = React.useState("identification");
   const { data: user } = useCurrentUser();
   const navigate = useNavigate();
-
+  if (user?.member) {
+    navigate(ROUTES.MEMBER);
+  }
   const form = useForm<MemberInput>({
     resolver: zodResolver(memberInputSchema),
     defaultValues: {
@@ -82,8 +84,8 @@ export default function Onboarding() {
       permanentCity: "",
       rsbsaNo: "",
       tinNo: "",
-      photoUrl: "",
-      validIdUrl: "",
+      photoUrl: "xx",
+      validIdUrl: "xx",
     },
   });
 

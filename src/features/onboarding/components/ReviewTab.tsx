@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
+import { Loader2, Send } from "lucide-react";
 import { type UseFormReturn } from "react-hook-form";
 
 export default function ReviewTab({
@@ -16,8 +17,7 @@ export default function ReviewTab({
   form: UseFormReturn<any>;
   onSubmit: () => void;
 }) {
-  const data = form.getValues();
-  console.log(data);
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <TabsContent value="review" className="gap-4 flex flex-col">
@@ -28,8 +28,18 @@ export default function ReviewTab({
         </CardHeader>
         <CardContent className="gap-4 flex flex-col"></CardContent>
       </Card>
-      <Button type="button" onClick={onSubmit}>
-        Next
+      <Button
+        type="button"
+        onClick={onSubmit}
+        disabled={isSubmitting}
+        className="w-full gap-2"
+      >
+        {isSubmitting ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Send className="h-4 w-4" />
+        )}
+        {isSubmitting ? "Submitting…" : "Submit Application"}
       </Button>
     </TabsContent>
   );

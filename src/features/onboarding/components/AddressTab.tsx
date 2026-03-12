@@ -27,7 +27,8 @@ export default function AddressTab({
   onSubmit: () => void;
 }) {
   const [cities, setCities] = React.useState<any[]>([]);
-  const [barangays, setBarangays] = React.useState<any[]>([]);
+  const [barangay1, setBarangay1] = React.useState<any[]>([]);
+  const [barangay2, setBarangay2] = React.useState<any[]>([]);
   const getCities = async () => {
     const cities = await locationApi.getCities();
     setCities(cities);
@@ -35,7 +36,7 @@ export default function AddressTab({
 
   const getBarangays = async (cityCode: string) => {
     const barangays = await locationApi.getBarangays(cityCode);
-    setBarangays(barangays);
+    return barangays;
   };
 
   React.useEffect(() => {
@@ -101,11 +102,10 @@ export default function AddressTab({
                   <FieldLabel htmlFor={field.name}>City</FieldLabel>
                   <NativeSelect
                     {...field}
-                    onChange={(e) => {
-                      console.log(e.target.value);
-
+                    onChange={async (e) => {
                       field.onChange(e.target.value);
-                      getBarangays(e.target.value);
+                      const barangays = await getBarangays(e.target.value);
+                      setBarangay1(barangays);
                     }}
                   >
                     <NativeSelectOption value="">
@@ -117,11 +117,6 @@ export default function AddressTab({
                       </NativeSelectOption>
                     ))}
                   </NativeSelect>
-                  {/* <Input
-                    {...field}
-                    id={field.name}
-                    placeholder="Enter your city"
-                  /> */}
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
@@ -138,7 +133,7 @@ export default function AddressTab({
                   <FieldLabel htmlFor={field.name}>Barangay</FieldLabel>
                   <NativeSelect
                     {...field}
-                    disabled={barangays.length === 0}
+                    disabled={barangay1.length === 0}
                     onChange={(e) => {
                       field.onChange(e.target.value);
                     }}
@@ -146,7 +141,7 @@ export default function AddressTab({
                     <NativeSelectOption value="">
                       Select barangay
                     </NativeSelectOption>
-                    {barangays.map((barangay) => (
+                    {barangay1.map((barangay) => (
                       <NativeSelectOption
                         key={barangay.code}
                         value={barangay.code}
@@ -242,11 +237,10 @@ export default function AddressTab({
                     <FieldLabel htmlFor={field.name}>City</FieldLabel>
                     <NativeSelect
                       {...field}
-                      onChange={(e) => {
-                        console.log(e.target.value);
-
+                      onChange={async (e) => {
                         field.onChange(e.target.value);
-                        getBarangays(e.target.value);
+                        const barangays = await getBarangays(e.target.value);
+                        setBarangay2(barangays);
                       }}
                     >
                       <NativeSelectOption value="">
@@ -258,11 +252,6 @@ export default function AddressTab({
                         </NativeSelectOption>
                       ))}
                     </NativeSelect>
-                    {/* <Input
-                    {...field}
-                    id={field.name}
-                    placeholder="Enter your city"
-                  /> */}
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -279,7 +268,7 @@ export default function AddressTab({
                     <FieldLabel htmlFor={field.name}>Barangay</FieldLabel>
                     <NativeSelect
                       {...field}
-                      disabled={barangays.length === 0}
+                      disabled={barangay2.length === 0}
                       onChange={(e) => {
                         field.onChange(e.target.value);
                       }}
@@ -287,7 +276,7 @@ export default function AddressTab({
                       <NativeSelectOption value="">
                         Select barangay
                       </NativeSelectOption>
-                      {barangays.map((barangay) => (
+                      {barangay2.map((barangay) => (
                         <NativeSelectOption
                           key={barangay.code}
                           value={barangay.code}
