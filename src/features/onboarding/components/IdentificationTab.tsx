@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Camera,
   CreditCard,
+  Loader2,
   RefreshCw,
   ShieldCheck,
 } from "lucide-react";
@@ -92,6 +93,7 @@ export default function IdentificationTab({
 }) {
   const [isSelfieCameraOpen, setIsSelfieCameraOpen] = React.useState(false);
   const [isIDCameraOpen, setIsIDCameraOpen] = React.useState(false);
+  const isSubmitting = form.formState.isSubmitting;
 
   const photoUrl = form.watch("photoUrl");
   const validIdUrl = form.watch("validIdUrl");
@@ -133,7 +135,7 @@ export default function IdentificationTab({
                     url={photoUrl}
                     label="Selfie"
                     aspectRatio="1/1"
-                    onCapture={() => setIsSelfieCameraOpen(true)}
+                    onCapture={() => !isSubmitting && setIsSelfieCameraOpen(true)}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -160,7 +162,7 @@ export default function IdentificationTab({
                     url={validIdUrl}
                     label="Valid ID"
                     aspectRatio="16/10"
-                    onCapture={() => setIsIDCameraOpen(true)}
+                    onCapture={() => !isSubmitting && setIsIDCameraOpen(true)}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -179,9 +181,18 @@ export default function IdentificationTab({
           </CardContent>
         </Card>
 
-        <Button type="button" onClick={onSubmit} className="w-full gap-2">
-          Submit Application
-          <ArrowRight className="h-4 w-4" />
+        <Button
+          type="button"
+          onClick={onSubmit}
+          disabled={isSubmitting}
+          className="w-full gap-2"
+        >
+          {isSubmitting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <ArrowRight className="h-4 w-4" />
+          )}
+          {isSubmitting ? "Submitting…" : "Submit Application"}
         </Button>
       </TabsContent>
 

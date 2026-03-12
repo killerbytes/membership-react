@@ -8,6 +8,7 @@ import {
 import { memberApi } from "@/features/members/api";
 import { prepareToUpload } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 
@@ -103,6 +104,7 @@ export default function SelfieCamera({
                 <div className=" bg-white rounded-full flex items-center justify-center p-1 mt-4">
                   <Button
                     className="bg-white rounded-full w-14 h-14 border-2 border-black"
+                    disabled={mutation.isPending}
                     onClick={capture}
                   />
                 </div>
@@ -113,10 +115,14 @@ export default function SelfieCamera({
       </div>
       <DialogFooter>
         <Button
-          disabled={!imgSrc}
+          disabled={!imgSrc || mutation.isPending}
           onClick={() => mutation.mutate(imgSrc || "")}
+          className="w-full gap-2"
         >
-          Save changes
+          {mutation.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : null}
+          {mutation.isPending ? "Uploading…" : "Save Photo"}
         </Button>
       </DialogFooter>
     </div>

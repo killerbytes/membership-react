@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -295,8 +296,9 @@ export default function AddressTab({
           </CardContent>
         </Card>
       )}
-      <Button type="button" onClick={onSubmit}>
-        Next
+      <Button type="button" onClick={onSubmit} className="w-full gap-2">
+        Continue
+        <ArrowRight className="h-4 w-4" />
       </Button>
     </TabsContent>
   );
