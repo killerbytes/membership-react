@@ -12,7 +12,7 @@ export function CameraDialog({
   return (
     <Dialog open={open} onOpenChange={onClose} disablePointerDismissal={true}>
       <form>
-        <DialogContent className="min-h-svh min-w-svw rounded-none">
+        <DialogContent className="min-h-svh min-w-svw rounded-none z-100">
           {children}
         </DialogContent>
       </form>

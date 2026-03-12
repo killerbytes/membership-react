@@ -28,10 +28,38 @@ export default function IDCamera({
     }
   }, [webcamRef]);
 
-  const uploadFile = async (image: string) => {
-    if (!image) throw new Error("No image source");
-    const formData = await prepareToUpload(image);
-    return await memberApi.uploadFile(formData, "id");
+  const uploadFile = (image: string): Promise<AxiosResponse> => {
+    if (!image) return Promise.reject(new Error("No image source"));
+
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+
+      img.onload = async () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          if (!ctx) throw new Error("Failed to get canvas 2D context");
+
+          canvas.width = img.height;
+          canvas.height = img.width;
+
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          ctx.rotate((-90 * Math.PI) / 180);
+          ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+          const landscapeBase64 = canvas.toDataURL("image/jpeg");
+          const formData = await prepareToUpload(landscapeBase64);
+          const response = await memberApi.uploadFile(formData, "id");
+          resolve(response);
+        } catch (err) {
+          reject(err);
+        }
+      };
+
+      img.onerror = () =>
+        reject(new Error("Failed to load image for rotation"));
+      img.src = image;
+    });
   };
 
   const mutation = useMutation({
@@ -54,56 +82,58 @@ export default function IDCamera({
         </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-4 flex-1">
-        <div>
-          {imgSrc ? (
-            <div className="flex flex-col gap-4">
-              <img
-                src={imgSrc}
-                alt="Captured face"
-                style={{ borderRadius: "8px", maxWidth: "400px" }}
-              />
-              <div className="flex flex-col items-center">
-                <Button onClick={() => setImgSrc(null)}>Retake Photo</Button>
-              </div>
+        {imgSrc ? (
+          <div className="flex flex-col gap-4">
+            <img
+              src={imgSrc}
+              alt="Captured face"
+              style={{ borderRadius: "8px", maxWidth: "400px" }}
+            />
+            <div className="flex flex-col items-center">
+              <Button onClick={() => setImgSrc(null)}>Retake Photo</Button>
             </div>
-          ) : (
-            <div className="flex flex-col gap-4">
-              <div className="min-h-100 relative w-full max-w-100 overflow-hidden">
-                <Webcam
-                  ref={webcamRef}
-                  audio={false}
-                  screenshotFormat="image/jpeg"
-                  videoConstraints={{
-                    facingMode: "environment",
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <div className="min-h-100 relative w-full max-w-100 overflow-hidden">
+              <Webcam
+                ref={webcamRef}
+                audio={false}
+                screenshotFormat="image/jpeg"
+                videoConstraints={{
+                  facingMode: "environment",
+                  width: 640,
+                  height: 480,
+                  aspectRatio: 16 / 9,
+                }}
+                style={{ width: "100%", height: "auto", objectFit: "cover" }}
+              />
+
+              <div
+                className="absolute top-0 left-0 flex items-center justify-center h-full w-full "
+                style={{
+                  pointerEvents: "none",
+                }}
+              >
+                <div
+                  className="w-67.5 h-100"
+                  style={{
+                    border: "3px dashed #00FF00",
+                    boxShadow: "0 0 0 9999px rgba(255, 255, 255, 0.8)",
                   }}
                 />
-
-                <div
-                  className="absolute top-0 left-0 flex items-center justify-center h-full w-full "
-                  style={{
-                    pointerEvents: "none",
-                  }}
-                >
-                  <div
-                    className="w-67.5 h-100"
-                    style={{
-                      border: "3px dashed #00FF00",
-                      boxShadow: "0 0 0 9999px rgba(255, 255, 255, 0.8)",
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className=" bg-white rounded-full flex items-center justify-center p-1 mt-4">
-                  <Button
-                    className="bg-white rounded-full w-14 h-14 border-2 border-black"
-                    onClick={capture}
-                  />
-                </div>
               </div>
             </div>
-          )}
-        </div>
+            <div className="flex flex-col items-center">
+              <div className=" bg-white rounded-full flex items-center justify-center p-1 mt-4">
+                <Button
+                  className="bg-white rounded-full w-14 h-14 border-2 border-black"
+                  onClick={capture}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <DialogFooter>
         <Button

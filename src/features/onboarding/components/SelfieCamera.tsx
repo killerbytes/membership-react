@@ -8,14 +8,13 @@ import {
 import { memberApi } from "@/features/members/api";
 import { prepareToUpload } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import type { AxiosResponse } from "axios";
 import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 
 export default function SelfieCamera({
   onSubmit,
 }: {
-  onSubmit: (res: AxiosResponse) => void;
+  onSubmit: (res: any) => void;
 }) {
   const webcamRef = useRef<Webcam>(null);
   const [imgSrc, setImgSrc] = useState<string | null>(null);

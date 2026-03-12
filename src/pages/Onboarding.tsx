@@ -13,17 +13,55 @@ import { queryClient } from "@/lib/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IdCard, MapPinHouse, User } from "lucide-react";
 import React from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+
 const tabs = [
   { key: "profile", label: "Profile", icon: User },
   { key: "info", label: "Info", icon: User },
   { key: "address", label: "Address", icon: MapPinHouse },
   { key: "identification", label: "Photo", icon: IdCard },
 ];
+
+const tabFields = {
+  profile: ["firstName", "lastName", "middleName"],
+  info: ["email", "mobile", "tinNo", "rsbsaNo"],
+  address: [
+    "permanentAddress1",
+    "permanentAddress2",
+    "permanentCity",
+    "permanentBarangay",
+    "currentAddress",
+    "currentAddress1",
+    "currentAddress2",
+    "currentCity",
+    "currentBarangay",
+  ],
+  identification: ["photoUrl", "validIdUrl"],
+} as const;
+
+const STEP_DESCRIPTIONS: Record<string, { title: string; subtitle: string }> = {
+  profile: {
+    title: "Tell us your name",
+    subtitle: "Step 1 of 4 — Personal information",
+  },
+  info: {
+    title: "Contact & IDs",
+    subtitle: "Step 2 of 4 — How we'll reach you",
+  },
+  address: {
+    title: "Your address",
+    subtitle: "Step 3 of 4 — Where you reside",
+  },
+  identification: {
+    title: "Photo & Valid ID",
+    subtitle: "Step 4 of 4 — Verify your identity",
+  },
+};
+
 export default function Onboarding() {
-  const [activeTab, setActiveTab] = React.useState("identification");
+  const [activeTab, setActiveTab] = React.useState("profile");
   const { data: user } = useCurrentUser();
   const navigate = useNavigate();
 
@@ -37,15 +75,15 @@ export default function Onboarding() {
       currentCity: "",
       firstName: "",
       lastName: "",
-      middleName: "Ramos",
+      middleName: "",
       permanentAddress1: "",
       permanentAddress2: "",
       permanentBarangay: "",
       permanentCity: "",
       rsbsaNo: "",
       tinNo: "",
-      // email: "",
-      // mobile: "",
+      photoUrl: "",
+      validIdUrl: "",
     },
   });
 
@@ -59,10 +97,8 @@ export default function Onboarding() {
 
   const onSubmit = async (formValues: any) => {
     try {
-      console.log(formValues);
       await memberApi.create(formValues);
       await queryClient.invalidateQueries({ queryKey: ["current-user"] });
-
       toast.success("Member created successfully");
       navigate(ROUTES.MEMBER);
     } catch (err: any) {
@@ -71,7 +107,6 @@ export default function Onboarding() {
           error?: string;
           errors?: { field: any; message: string }[];
         };
-        console.log(error);
         let firstErrorTab: string | null = null;
 
         error.errors?.forEach((e) => {
@@ -101,25 +136,6 @@ export default function Onboarding() {
     }
   };
 
-  const formData = useWatch({ control: form.control });
-
-  const tabFields = {
-    profile: ["firstName", "lastName", "middleName"],
-    info: ["email", "mobile", "tinNo", "rsbsaNo"],
-    address: [
-      "permanentAddress1",
-      "permanentAddress2",
-      "permanentCity",
-      "permanentBarangay",
-      "currentAddress",
-      "currentAddress1",
-      "currentAddress2",
-      "currentCity",
-      "currentBarangay",
-    ],
-    identification: ["photoUrl", "validIdUrl"],
-  } as const;
-
   const onInvalid = (errors: any) => {
     for (const [tab, fields] of Object.entries(tabFields)) {
       if (fields.some((field) => errors[field])) {
@@ -139,14 +155,24 @@ export default function Onboarding() {
     }
   };
 
+  const stepInfo = STEP_DESCRIPTIONS[activeTab] ?? {
+    title: "Member Onboarding",
+    subtitle: "Complete all steps to register",
+  };
+
   return (
-    <div className="flex flex-col gap-4 flex-1">
-      <h1>Member Onboarding</h1>
+    <div className="flex flex-col gap-5 flex-1">
+      <div className="flex flex-col gap-0.5">
+        <h1 className="leading-tight">{stepInfo.title}</h1>
+        <p className="text-xs text-muted-foreground">{stepInfo.subtitle}</p>
+      </div>
+
       <BreadcrumbTabs
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         tabs={tabs}
       />
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
         <ProfileTab
           form={form}
@@ -159,19 +185,17 @@ export default function Onboarding() {
         />
         <IdentificationTab
           form={form}
-          onSubmit={() => handleNext("identification", "review")}
+          onSubmit={() => {
+            form.handleSubmit(onSubmit, onInvalid)();
+          }}
         />
         <ReviewTab
           form={form}
           onSubmit={() => {
-            console.log(form.getValues(), form.formState.errors);
             form.handleSubmit(onSubmit, onInvalid)();
           }}
         />
       </Tabs>
-      {/* <pre className="bg-muted p-4 rounded-md text-xs">
-        {JSON.stringify(formData, null, 2)}
-      </pre> */}
     </div>
   );
 }

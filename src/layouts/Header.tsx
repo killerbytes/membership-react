@@ -33,7 +33,7 @@ export default function Header() {
     window.location.replace(ROUTES.LOGIN);
   };
   return (
-    <header className="flex items-center justify-between p-4 bg-accent sticky top-0 shadow-[0_2px_4px_rgba(0,0,0,0.1)] ">
+    <header className="z-100 flex items-center justify-between p-4 bg-primary text-primary-foreground sticky top-0 shadow-[0_2px_4px_rgba(0,0,0,0.1)] ">
       <div className="font-semibold">Header</div>
       <Button variant="ghost" onClick={handleLogout}>
         <LogOut />

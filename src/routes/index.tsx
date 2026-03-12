@@ -1,5 +1,7 @@
 import { ROUTES } from "@/constants";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import MainLayout from "@/layouts/MainLayout";
+import Finance from "@/pages/Finance";
 import Login from "@/pages/Login";
 import Main from "@/pages/Main";
 import Members from "@/pages/Member";
@@ -11,7 +13,10 @@ import { useRoutes } from "react-router-dom";
 
 export const AppRoutes = () => {
   const customRoutes = [
-    { path: ROUTES.LOGIN, element: <Login /> },
+    {
+      path: ROUTES.LOGIN,
+      element: <Login />,
+    },
     { path: ROUTES.REGISTER, element: <Register /> },
     {
       path: "/",
@@ -22,11 +27,19 @@ export const AppRoutes = () => {
       ),
     },
     {
-      path: ROUTES.ONBOARDING,
+      path: ROUTES.FINANCE,
       element: (
         <MainLayout>
-          <Onboarding />
+          <Finance />
         </MainLayout>
+      ),
+    },
+    {
+      path: ROUTES.ONBOARDING,
+      element: (
+        <DefaultLayout>
+          <Onboarding />
+        </DefaultLayout>
       ),
     },
     {
