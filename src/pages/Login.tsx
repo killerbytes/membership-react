@@ -15,7 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, Loader2, LogIn, Sprout } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -28,6 +28,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 function useLoginForm() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -36,7 +37,8 @@ function useLoginForm() {
 
   const mutation = useMutation({
     mutationFn: (values: LoginFormData) => authApi.login(values),
-    onSuccess: () => navigate(ROUTES.MAIN),
+    onSuccess: () =>
+      navigate(decodeURIComponent(params.get("callbackUrl") || ROUTES.MAIN)),
     onError: (error) => {
       // const msg = error instanceof Error ? error.message : "Unknown error";
       toast.error(`Login failed — ${error.message}`);

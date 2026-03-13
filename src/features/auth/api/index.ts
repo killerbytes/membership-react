@@ -18,7 +18,7 @@ export const authApi = {
   },
   logout: async () => {
     localStorage.removeItem(`${import.meta.env.VITE_APP_NAME}_TOKEN`);
-    // await apiClient.post("/auth/logout");
+    await apiClient.post("/auth/logout");
   },
   changePassword: async (data: any) => {
     return apiClient.post("/auth/changePassword", data);

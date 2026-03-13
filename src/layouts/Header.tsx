@@ -23,8 +23,8 @@ export default function Header() {
     }
   }, [user, isLoading, navigate]);
 
-  const handleLogout = () => {
-    authApi.logout();
+  const handleLogout = async () => {
+    await authApi.logout();
     queryClient.clear();
     window.location.replace(ROUTES.LOGIN);
   };

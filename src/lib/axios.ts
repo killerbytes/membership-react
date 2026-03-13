@@ -23,10 +23,12 @@ apiClient.interceptors.response.use(
   (response) => response.data,
   async (error) => {
     const originalRequest = error.config;
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (originalRequest.url?.includes("/auth/refresh-token")) {
         return Promise.reject(error);
       }
+
       originalRequest._retry = true;
       try {
         const { data } = await axios.post(
@@ -34,13 +36,25 @@ apiClient.interceptors.response.use(
           {},
           { withCredentials: true }
         );
+
         localStorage.setItem(
           `${import.meta.env.VITE_APP_NAME}_TOKEN`,
           data.accessToken
         );
         originalRequest.headers["x-access-token"] = data.accessToken;
+
         return apiClient(originalRequest);
       } catch (retryError) {
+        const currentUrl = window.location.pathname + window.location.search;
+
+        localStorage.setItem("apiError", retryError.response.data.message);
+        switch (retryError.response.data.message) {
+          case "Invalid refresh token":
+            localStorage.removeItem(`${import.meta.env.VITE_APP_NAME}_TOKEN`);
+            window.location.href = `${ROUTES.LOGIN}?callbackUrl=${encodeURIComponent(currentUrl)}`;
+            break;
+        }
+
         return Promise.reject(retryError);
       }
     }
