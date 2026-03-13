@@ -69,7 +69,7 @@ export default function Onboarding() {
   const form = useForm<MemberInput>({
     resolver: zodResolver(memberInputSchema),
     defaultValues: {
-      currentAddress: true,
+      currentAddress: false,
       currentAddress1: "",
       currentAddress2: "",
       currentBarangay: "",
