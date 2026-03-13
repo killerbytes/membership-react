@@ -2,7 +2,7 @@ import { ROUTES } from "@/constants";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import MainLayout from "@/layouts/MainLayout";
 import ToasterLayout from "@/layouts/ToasterLayout";
-import Finance from "@/pages/Finance";
+import Dividends from "@/pages/Dividends";
 import Login from "@/pages/Login";
 import Main from "@/pages/Main";
 import Members from "@/pages/Member";
@@ -39,10 +39,10 @@ export const AppRoutes = () => {
       ),
     },
     {
-      path: ROUTES.FINANCE,
+      path: ROUTES.DIVIDENDS,
       element: (
         <MainLayout>
-          <Finance />
+          <Dividends />
         </MainLayout>
       ),
     },

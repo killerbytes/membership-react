@@ -4,7 +4,7 @@ import { NavLink, useLocation } from "react-router";
 
 const NAV_ITEMS = [
   { to: ROUTES.MAIN, label: "Home", icon: Home },
-  { to: ROUTES.FINANCE, label: "Finance", icon: BadgeDollarSign },
+  { to: ROUTES.DIVIDENDS, label: "Dividends", icon: BadgeDollarSign },
   { to: ROUTES.QR, label: "QR Code", icon: QrCode },
   { to: ROUTES.MEMBER, label: "Profile", icon: UserCircle },
 ] as const;

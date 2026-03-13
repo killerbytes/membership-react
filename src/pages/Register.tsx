@@ -34,7 +34,10 @@ function useRegisterForm() {
 
   const mutation = useMutation({
     mutationFn: (payload: UserBase) => userApi.create(payload),
-    onSuccess: () => navigate(ROUTES.LOGIN),
+    onSuccess: () => {
+      toast.success("Registration successful. You may now login.");
+      navigate(ROUTES.LOGIN);
+    },
     onError: (error) => {
       const msg = error instanceof Error ? error.message : "Unknown error";
       toast.error(`Registration failed — ${msg}`);

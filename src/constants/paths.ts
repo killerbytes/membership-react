@@ -8,5 +8,5 @@ export const ROUTES = {
   MEMBER_DETAILS: "/member/:id",
   ONBOARDING: "/onboarding",
   QR: "/qr",
-  FINANCE: "/finance",
+  DIVIDENDS: "/dividends",
 };
